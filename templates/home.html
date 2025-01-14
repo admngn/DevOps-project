@@ -3,53 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Calculator</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Health Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 500px; margin: auto; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="number"] { width: 100%; padding: 8px; }
-        button { padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .result { margin-top: 20px; font-size: 1.1em; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Loan Calculator</h2>
-        <div class="input-group">
-            <label for="loan_amount">Loan Amount ($)</label>
-            <input type="number" id="loan_amount" name="loan_amount" required>
-        </div>
-        <div class="input-group">
-            <label for="duration">Duration (years)</label>
-            <input type="number" id="duration" name="duration" required>
-        </div>
-        <div class="input-group">
-            <label for="interest_rate">Interest Rate (%)</label>
-            <input type="number" id="interest_rate" name="interest_rate" step="0.01" required>
-        </div>
-        <button onclick="calculateLoan()">Calculate</button>
+    <h1>Health Calculator</h1>
 
-        <div class="result">
-            <p>Monthly Payment: $<span id="monthly_payment">0.00</span></p>
-            <p>Total Cost of Loan: $<span id="total_cost">0.00</span></p>
+    <h2>Calculate BMI</h2>
+    <form id="bmiForm">
+        <div class="form-group">
+            <label for="bmiHeight">Height (in meters):</label>
+            <input type="number" step="0.01" id="bmiHeight" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="bmiWeight">Weight (in kilograms):</label>
+            <input type="number" step="0.1" id="bmiWeight" required>
+        </div>
+        <button type="submit">Calculate BMI</button>
+    </form>
+    <div class="result" id="bmiResult"></div>
+
+    <h2>Calculate BMR</h2>
+    <form id="bmrForm">
+        <div class="form-group">
+            <label for="bmrHeight">Height (in centimeters):</label>
+            <input type="number" step="1" id="bmrHeight" required>
+        </div>
+        <div class="form-group">
+            <label for="bmrWeight">Weight (in kilograms):</label>
+            <input type="number" step="0.1" id="bmrWeight" required>
+        </div>
+        <div class="form-group">
+            <label for="bmrAge">Age (in years):</label>
+            <input type="number" id="bmrAge" required>
+        </div>
+        <div class="form-group">
+            <label for="bmrGender">Gender:</label>
+            <select id="bmrGender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        <button type="submit">Calculate BMR</button>
+    </form>
+    <div class="result" id="bmrResult"></div>
 
     <script>
-        function calculateLoan() {
-            const loan_amount = parseFloat(document.getElementById('loan_amount').value);
-            const duration = parseInt(document.getElementById('duration').value);
-            const interest_rate = parseFloat(document.getElementById('interest_rate').value);
+        document.getElementById("bmiForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const height = parseFloat(document.getElementById("bmiHeight").value);
+            const weight = parseFloat(document.getElementById("bmiWeight").value);
 
-            $.post('/calculate', { loan_amount, duration, interest_rate }, function(data) {
-                $('#monthly_payment').text(data.monthly_payment.toFixed(2));
-                $('#total_cost').text(data.total_cost.toFixed(2));
+            const response = await fetch('/bmi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ height, weight })
             });
-        }
+
+            const result = await response.json();
+            document.getElementById("bmiResult").textContent = `Your BMI is: ${result.BMI}`;
+        });
+
+        document.getElementById("bmrForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const height = parseFloat(document.getElementById("bmrHeight").value);
+            const weight = parseFloat(document.getElementById("bmrWeight").value);
+            const age = parseInt(document.getElementById("bmrAge").value, 10);
+            const gender = document.getElementById("bmrGender").value;
+
+            const response = await fetch('/bmr', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ height, weight, age, gender })
+            });
+
+            const result = await response.json();
+            document.getElementById("bmrResult").textContent = `Your BMR is: ${result.BMR}`;
+        });
     </script>
 </body>
 </html>

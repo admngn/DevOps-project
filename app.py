@@ -1,25 +1,38 @@
-from flask import Flask, render_template, request, jsonify
-from utils import calculate_monthly_payment, calculate_total_cost
+from flask import Flask, request, jsonify, render_template
+from health_utils import calculate_bmi, calculate_bmr
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
+
+@app.route('/bmi', methods=['POST'])
+def bmi():
+    data = request.get_json()
+    if not data or 'height' not in data or 'weight' not in data:
+        return jsonify({'error': 'Invalid input. Please provide height and weight.'}), 400
+    height = data['height']
+    weight = data['weight']
+    result = calculate_bmi(height, weight)
+    return jsonify({'BMI': result})
+
+@app.route('/bmr', methods=['POST'])
+def bmr():
+    data = request.get_json()
+    required_fields = ['height', 'weight', 'age', 'gender']
+    if not data or not all(field in data for field in required_fields):
+        return jsonify({'error': f'Invalid input. Please provide {", ".join(required_fields)}.'}), 400
+    height = data['height']
+    weight = data['weight']
+    age = data['age']
+    gender = data['gender']
+    result = calculate_bmr(height, weight, age, gender)
+    return jsonify({'BMR': result})
 
 @app.route('/')
-def home():
+def index():
     return render_template('home.html')
 
-@app.route('/calculate', methods=['POST'])
-def calculate():
-    loan_amount = float(request.form['loan_amount'])
-    duration_years = int(request.form['duration'])
-    annual_interest_rate = float(request.form['interest_rate'])
-
-    monthly_payment = calculate_monthly_payment(loan_amount, duration_years, annual_interest_rate)
-    total_cost = calculate_total_cost(monthly_payment, duration_years)
-
-    return jsonify({
-        'monthly_payment': monthly_payment,
-        'total_cost': total_cost
-    })
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    if not os.path.exists("templates/home.html"):
+        raise FileNotFoundError("Le fichier home.html est manquant dans le dossier 'templates'")
+    app.run(host='0.0.0.0', port=5000)
+

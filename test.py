@@ -1,29 +1,17 @@
 import unittest
-from utils import calculate_monthly_payment, calculate_total_cost
+from health_utils import calculate_bmi, calculate_bmr
 
-class TestLoanCalculatorUtils(unittest.TestCase):
-    def test_calculate_monthly_payment_with_interest(self):
-        loan_amount = 10000
-        duration_years = 5
-        annual_interest_rate = 5
-        expected_payment = 188.71
-        result = calculate_monthly_payment(loan_amount, duration_years, annual_interest_rate)
-        self.assertAlmostEqual(result, expected_payment, places=2)
+class TestHealthUtils(unittest.TestCase):
+    def test_calculate_bmi(self):
+        self.assertAlmostEqual(calculate_bmi(1.75, 70), 22.86, places=2)
 
-    def test_calculate_monthly_payment_no_interest(self):
-        loan_amount = 10000
-        duration_years = 5
-        annual_interest_rate = 0
-        expected_payment = 166.67
-        result = calculate_monthly_payment(loan_amount, duration_years, annual_interest_rate)
-        self.assertAlmostEqual(result, expected_payment, places=2)
+    def test_calculate_bmr_male(self):
+       
+        self.assertAlmostEqual(calculate_bmr(175, 70, 25, 'male'), 1668.1, places=1)
 
-    def test_calculate_total_cost(self):
-        monthly_payment = 188.71
-        duration_years = 5
-        expected_total_cost = 11322.6
-        result = calculate_total_cost(monthly_payment, duration_years)
-        self.assertAlmostEqual(result, expected_total_cost, places=2)
+    def test_calculate_bmr_female(self):
+       
+        self.assertAlmostEqual(calculate_bmr(175, 70, 25, 'female'), 1496.0, places=1)
 
 if __name__ == '__main__':
     unittest.main()
