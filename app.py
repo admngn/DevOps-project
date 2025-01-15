@@ -32,7 +32,7 @@ def index():
     return render_template('home.html')
 
 if __name__ == '__main__':
-    if not os.path.exists("template/home.html"):
+    if not os.path.exists("templates/home.html"):
         raise FileNotFoundError("Le fichier home.html est manquant dans le dossier 'templates'")
     app.run(host='0.0.0.0', port=5000)
 
