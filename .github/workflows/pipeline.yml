@@ -1,0 +1,32 @@
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: | # here is the first command
+       
+
+    - name: Run tests
+      run: | # here is the first command
+
+    - name: Build Docker image
+      run: | # here is the first command
+
+  
