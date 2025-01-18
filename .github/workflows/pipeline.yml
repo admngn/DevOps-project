@@ -32,17 +32,21 @@ jobs:
         run: |
           python -m unittest discover
 
-      # Étape 5 : Préparer les fichiers pour le déploiement
+      # Étape 5 : Déplacer index.html vers la racine (si nécessaire)
+      - name: Move index.html to root
+        run: cp templates/index.html .
+
+      # Étape 6 : Préparer les fichiers pour le déploiement
       - name: Zip artifact for deployment
-        run:  zip -r release.zip ./templates/*
-      # Étape 6 : Télécharger l’artefact pour le déploiement
+        run: zip -r release.zip home.html app.py requirements.txt
+
+      # Étape 7 : Télécharger l’artefact pour le déploiement
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: your-app
           path: |
             release.zip
-            !venv/
 
   deploy:
     runs-on: ubuntu-latest
@@ -77,6 +81,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'bmr-bmiwebapp' # Remplacez par le nom de votre application Azure
+          app-name: 'bmr-bmiwebapp'
           slot-name: 'Production'
-          package: 'release.zip'
+          package: './release.zip'
