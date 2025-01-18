@@ -80,3 +80,4 @@ jobs:
         with:
           app-name: 'bmr-bmiwebapp' # Remplacez par le nom de votre application Azure
           slot-name: 'Production'
+          package: '.'
