@@ -32,21 +32,17 @@ jobs:
         run: |
           python -m unittest discover
 
-      # Étape 5 : Déplacer index.html vers la racine (si nécessaire)
-      - name: Move index.html to root
-        run: cp templates/index.html .
-
-      # Étape 6 : Préparer les fichiers pour le déploiement
+      # Étape 5 : Préparer les fichiers pour le déploiement
       - name: Zip artifact for deployment
-        run: zip -r release.zip home.html app.py requirements.txt
+        run: |
+          zip -r release.zip ./templates/home.html requirements.txt app.py
 
-      # Étape 7 : Télécharger l’artefact pour le déploiement
+      # Étape 6 : Télécharger l’artefact pour le déploiement
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: your-app
-          path: |
-            release.zip
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
