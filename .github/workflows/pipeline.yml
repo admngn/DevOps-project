@@ -34,8 +34,7 @@ jobs:
 
       # Étape 5 : Préparer les fichiers pour le déploiement
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
+        run:  zip -r release.zip ./templates/*
       # Étape 6 : Télécharger l’artefact pour le déploiement
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
@@ -80,4 +79,4 @@ jobs:
         with:
           app-name: 'bmr-bmiwebapp' # Remplacez par le nom de votre application Azure
           slot-name: 'Production'
-          package: '.'
+          package: 'release.zip'
