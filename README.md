@@ -1,88 +1,103 @@
-# Flask App - DevOps Project Template
+# DevOps Project - BMR & BMI Calculator
 
-This repository serves as a template for a simple Flask-based DevOps project. The app provides basic calculator functionalities (addition and subtraction) and includes all necessary files for setting up a local environment, running tests, and deploying to a cloud service with best practices in DevOps.
+Ce projet est une application web destinée à calculer le **BMR (Basal Metabolic Rate)** et le **BMI (Body Mass Index)**, avec un pipeline CI/CD automatisé utilisant GitHub Actions pour déploiement sur Azure Web Apps.
 
-## Project Structure
+## Fonctionnalités principales
 
-The repository is organized as follows:
+- Calcul du **BMR** (taux métabolique de base) en fonction de la taille, du poids, de l'âge et du sexe.
+- Calcul du **BMI** (indice de masse corporelle) pour évaluer l'état de santé basé sur le poids et la taille.
+- Interface web simple pour entrer les données et afficher les résultats.
+- Intégration d'un pipeline CI/CD avec GitHub Actions pour automatiser les tests et le déploiement.
 
-```plaintext
-DEVOPS-PROJECT/
-├── app.py
-├── utils.py
-├── test.py
-├── requirements.txt
-├── Makefile
-├── templates/
-│   └── home.html
-├── .env
-├── .gitignore
-```
+## Technologies utilisées
 
-### File Descriptions
+- **Backend** : Flask (Python)
+- **Frontend** : HTML/CSS (fichier `home.html` dans le dossier `templates`)
+- **CI/CD** : GitHub Actions
+- **Déploiement** : Azure Web Apps
 
-- **`app.py`**: The main application file for the Flask app. It sets up routes and connects them to functions in `utils.py` to provide API endpoints for app operations.
+## Prérequis
 
-- **`utils.py`**: Contains utility functions for core operations like addition and subtraction. This file is designed to house the main logic for the app’s functionality.
+- **Python 3.x** installé localement
+- **Git** pour la gestion du dépôt
+- Compte Azure avec un service App Service configuré
+- Secrets GitHub configurés :
+  - `AZURE_CLIENT_ID`
+  - `AZURE_TENANT_ID`
+  - `AZURE_SUBSCRIPTION_ID`
+  - `AZURE_CLIENT_SECRET`
 
-- **`test.py`**: A unit test file that includes tests for the functions defined in `utils.py`. This file ensures that the core functionality behaves as expected.
+## Installation locale
 
-- **`requirements.txt`**: Lists the Python dependencies needed to run the application. This file is used to install the necessary packages in the project environment.
-
-- **`Makefile`**: A makefile to streamline project setup and operations. Includes commands for:
-  - `make init`: Install project dependencies.
-  - `make run`: Start the Flask app.
-  - `make test`: Run all unit tests.
-
-- **`templates/home.html`**: HTML template for the app's user interface. This file provides input fields and buttons for interacting with the calculator operations.
-
-- **`.env`**: A configuration file for environment variables. It’s used to securely store sensitive information (like API keys, database credentials, or environment-specific settings). **Note**: This file should not be committed to version control for security reasons.
-
-- **`.gitignore`**: Specifies files and directories that should be ignored by Git. It typically includes files such as `.env` and compiled Python files (`__pycache__`), as well as local environment and dependency caches.
-
-## Getting Started
-
-1. **Clone the Repository**:
+1. Clonez le dépôt :
    ```bash
-   git clone <repository-url>
-   cd DEVOPS-PROJECT
+   git clone https://github.com/admngn/DevOps-project.git
+   cd DevOps-project
    ```
 
-2. **Set Up the Environment**:
-   - Create and activate a virtual environment (recommended for managing dependencies).
-   - Install the dependencies:
-     ```bash
-     make init
-     ```
+2. Créez un environnement virtuel et activez-le :
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # macOS/Linux
+   venv\Scripts\activate   # Windows
+   ```
 
-3. **Run the Application**:
-   - Start the Flask app locally:
-     ```bash
-     make run
-     ```
+3. Installez les dépendances :
+   ```bash
+   pip install -r requirements.txt
+   ```
 
+4. Exécutez l'application localement :
+   ```bash
+   python app.py
+   ```
 
-4. **Run Tests**:
-   - Execute unit tests to verify functionality:
-     ```bash
-     make test
-     ```
+5. Accédez à l'application dans votre navigateur à l'URL :
+   ```
+   http://127.0.0.1:5000/
+   ```
 
-## Additional Configuration
+## Déploiement avec GitHub Actions
 
-- **Environment Variables**:
-  - Use the `.env` file to store any environment-specific configurations or sensitive information. Be sure to keep this file out of version control by listing it in `.gitignore`.
+1. Poussez vos modifications dans la branche `main`.
+2. Le pipeline CI/CD dans `.github/workflows/pipeline.yaml` sera automatiquement exécuté :
+   - Installation des dépendances
+   - Exécution des tests unitaires
+   - Création d'un artefact ZIP contenant les fichiers nécessaires
+   - Déploiement sur Azure Web Apps
+3. Accédez à l'application déployée à l'URL :
+   ```
+   https://bmr-bmiwebapp.azurewebsites.net
+   ```
 
-## Deployment Instructions
+## Structure du projet
 
-For deployment, configure CI/CD pipelines according to your preferred platform (e.g., GitHub Actions, Azure Pipelines). This template can be used with cloud deployment platforms like AWS, Azure, or Heroku for easy scalability.
-  - Use `pipeline.yaml` as a template for a pipeline to build and deploy an application on Azure
+```
+DevOps-project/
+├── templates/
+│   └── home.html         # Fichier HTML principal pour l'interface utilisateur
+├── app.py                # Backend Flask pour gérer les calculs et les routes
+├── requirements.txt      # Liste des dépendances Python
+├── .github/workflows/
+│   └── pipeline.yaml     # Pipeline CI/CD GitHub Actions
+└── README.md             # Documentation du projet
+```
 
-## Author
+## Pipeline CI/CD
 
-This template was created by **Ali Mokh** and is intended as an educational resource for DevOps projects involving Flask applications.
+Le pipeline CI/CD inclut les étapes suivantes :
 
-## License and Usage
+1. **Clonage du code source** : Télécharge le dépôt depuis GitHub.
+2. **Installation des dépendances** : Configure l'environnement Python et installe les dépendances nécessaires.
+3. **Tests unitaires** : Exécute les tests définis dans `test.py` pour valider les calculs et fonctionnalités.
+4. **Création d'un artefact** : Zippe les fichiers nécessaires pour le déploiement.
+5. **Déploiement** : Envoie les fichiers sur Azure Web Apps.
 
-This project template is open to use by anyone and may be freely adapted for personal or professional projects. If you use this template as part of teaching materials or educational content, please cite **Ali Mokh** as the original author.
+## Tests unitaires
 
+Les tests sont situés dans le fichier `test.py` et utilisent le module `unittest`. Ils valident les calculs du BMR et du BMI.
+
+Pour exécuter les tests localement :
+```bash
+python -m unittest discover
+```
